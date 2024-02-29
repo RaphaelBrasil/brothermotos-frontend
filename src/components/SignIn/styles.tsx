@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const commonSpacing = "5px";
 const labelColor = "#a8a8a8";
-const errorColor = "red";
+const errorColor = "#592941";
 
 export const Container = styled.div`
 	display: flex;
@@ -14,7 +14,7 @@ export const Container = styled.div`
 
 export const FormContainer = styled.form`
 	gap: ${commonSpacing};
-	border-radius: 8px;
+	background: #ffffff;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -32,9 +32,8 @@ export const FormContainer = styled.form`
 
 export const ButtonContainer = styled.div`
 	display: flex;
-	align-items: center;
-	justify-content: space-evenly;
-	width: 90%;
+	gap: 1rem;
+	width: 95%;
 	outline: none;
 `;
 

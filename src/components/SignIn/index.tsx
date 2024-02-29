@@ -59,7 +59,7 @@ const Signin = () => {
 			<S.FormContainer onSubmit={handleSubmit(onSubmit)}>
 				<Input
 					type="text"
-					placeholder="Nome"
+					placeholder="Nome:"
 					{...register("name", {
 						required: "Nome é obrigatório;!",
 						maxLength: {
@@ -70,7 +70,7 @@ const Signin = () => {
 				/>
 				<Input
 					type="text"
-					placeholder="Email"
+					placeholder="Email:"
 					{...register("email", {
 						required: "Email é obrigatório!",
 						pattern: {
@@ -81,7 +81,7 @@ const Signin = () => {
 				/>
 				<Input
 					type="password"
-					placeholder="Senha"
+					placeholder="Senha:"
 					{...register("password", {
 						required: "A senha é obrigatória!",
 						minLength: {

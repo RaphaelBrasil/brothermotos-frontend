@@ -8,7 +8,6 @@ interface ButtonProps {
 export const StyledButton = styled.button<ButtonProps>`
 	outline: none;
 	border: none;
-	border-radius: 8px;
 	height: 40px;
 	width: 160px;
 	cursor: pointer;

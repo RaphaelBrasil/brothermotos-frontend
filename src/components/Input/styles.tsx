@@ -4,7 +4,6 @@ export const NormalInput = styled.input`
 	padding: 5px 5px;
 	height: 35px;
 	width: 330px;
-	border-radius: 8px;
 	background-color: #ffffff;
 	border: 1px solid #49b4bb;
 	color: #a8a8a8;

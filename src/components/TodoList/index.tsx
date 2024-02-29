@@ -28,23 +28,28 @@ const TodoList: React.FC<TodoListProps> = () => {
 	}, [userEmail]);
 
 	function addTask(taskText: string) {
-		const newTask: Task = {
-			id: Date.now(),
-			text: taskText,
-			completed: false,
-			user: userEmail
-		};
-		setTasks([...tasks, newTask]);
-		setText("");
+		if (taskText.trim() !== "") {
+			const newTask: Task = {
+				id: Date.now(),
+				text: taskText,
+				completed: false,
+				user: userEmail
+			};
+			setTasks((prevTasks) => [...prevTasks, newTask]);
+			setText("");
+		}
 	}
 
 	function deleteTask(id: number) {
 		setTasks(tasks.filter((task) => task.id !== id));
 	}
 
-	function editTask(id: number) {
-		//todo:: realizar a função correta de edição
-		setTasks(tasks.filter((task) => task.id !== id));
+	function editTask(id: number, newText: string) {
+		setTasks(
+			tasks.map((task) =>
+				task.id === id ? { ...task, text: newText } : task
+			)
+		);
 	}
 
 	function toggleCompleted(id: number) {

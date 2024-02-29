@@ -7,15 +7,12 @@ interface Props {
 export const Container = styled.div<Props>`
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
-	background: red;
+	gap: 1px;
 	width: 100%;
 	height: 40px;
 	outline: none;
-	border-radius: 5px;
 	padding: 10px;
 	margin: 2px;
-	border: ;
 	border: ${(props) =>
 		props.clicked ? "1px solid #a8a8a8" : "1px solid #49b4bb"};
 	&:hover {
@@ -27,24 +24,30 @@ export const Item = styled.p<Props>`
 	color: ${(props) => (props.clicked ? "#a8a8a8" : "#49b4bb")};
 	text-decoration: ${(props) => (props.clicked ? "line-through" : "none")};
 	cursor: pointer;
+	border: none;
 	padding: 0.75rem 1rem;
-	border-radius: 5px;
+	width: 100%;
 `;
-export const Item2 = styled.p<Props>`
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	background: #8758ff;
-	color: #fff;
+
+export const NormalInput = styled.input`
+	user-select: none;
+	color: #772f1a;
+	text-decoration: none;
+	cursor: edit;
 	padding: 0.75rem 1rem;
-	border-radius: 5px;
-	margin-bottom: 1rem;
+	width: 100%;
+	background: none;
+	border: none;
+	&:focus {
+		outline: none;
+	}
 `;
+
 export const IconWrapper = styled.div`
-	background: pink;
+	background: none;
+	width: 5rem;
 	display: flex;
-	flex-direction: row;
-	justify-content: space-around;
-	gap: 5px;
 	align-items: center;
+	justify-content: end;
+	gap: 5px;
 `;

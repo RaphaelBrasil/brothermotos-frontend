@@ -8,16 +8,17 @@ const GlobalStyle = createGlobalStyle`
 
   * {
   font-family: 'Roboto-Bold', 'Helvetica', sans-serif;
+  font-size: 17px;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  border-radius: 8px
 }
 
 body {
-  background: #ffffff;
+  background: #e0e0e0;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 `;
