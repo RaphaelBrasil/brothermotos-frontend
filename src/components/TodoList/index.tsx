@@ -3,6 +3,7 @@ import TodoItem from "../TodoItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import * as S from "./styles";
+import axios from "axios";
 
 interface Task {
 	id: number;
@@ -17,39 +18,102 @@ const TodoList: React.FC<TodoListProps> = () => {
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const [text, setText] = useState<string>("");
 	const [userEmail, setUserEmail] = useState<string>("");
+	const baseURL = "http://localhost:6060";
 
 	useEffect(() => {
 		// Recuperando informações do usuário do LocalStorage
 		const userString = localStorage.getItem("userEmail");
 		if (userString) {
 			setUserEmail(JSON.parse(userString));
-			console.log("Informações do usuário:", userEmail);
+			console.log("Informações do usuário:", userString);
 		}
-	}, [userEmail]);
+	}, []);
+
+	useEffect(() => {
+		async function fetchData() {
+			try {
+				const response = await axios.get(
+					`${baseURL}/tasks/${userEmail}`
+				);
+				if (Array.isArray(response.data)) {
+					setTasks(response.data);
+				} else {
+					console.error(
+						"A resposta recebida não é um array: ",
+						response.data
+					);
+					setTasks([]);
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		}
+
+		fetchData();
+	}, []);
+
+	async function addOrModifyTasksData(task: Task) {
+		try {
+			const response = await axios.post(`${baseURL}/tasks`, task);
+			console.log("Enviado ao BD");
+			console.log(response);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	async function deleteTaskData(task: Task) {
+		try {
+			const response = await axios.delete(`${baseURL}/tasks/${task.id}`);
+			console.log("Enviado ao BD");
+			console.log(response);
+		} catch (error) {
+			console.error("Error deleting task data:", error);
+		}
+	}
 
 	function addTask(taskText: string) {
-		if (taskText.trim() !== "") {
-			const newTask: Task = {
-				id: Date.now(),
-				text: taskText,
-				completed: false,
-				user: userEmail
-			};
-			setTasks((prevTasks) => [...prevTasks, newTask]);
-			setText("");
+		try {
+			if (taskText.trim() !== "") {
+				const newTask: Task = {
+					id: Date.now(),
+					text: taskText,
+					completed: false,
+					user: userEmail
+				};
+				setTasks((prevTasks) => [...prevTasks, newTask]);
+				setText("");
+				addOrModifyTasksData(newTask);
+			}
+		} catch (error) {
+			console.log("Não foi possivel adicionar tarefa ao banco de dados");
 		}
 	}
 
 	function deleteTask(id: number) {
 		setTasks(tasks.filter((task) => task.id !== id));
+		const taskToDelete = tasks.find((task) => task.id === id);
+		if (taskToDelete) {
+			deleteTaskData(taskToDelete);
+		}
 	}
 
 	function editTask(id: number, newText: string) {
-		setTasks(
-			tasks.map((task) =>
+		setTasks((prevTasks) =>
+			prevTasks.map((task) =>
 				task.id === id ? { ...task, text: newText } : task
 			)
 		);
+
+		const taskToUpdate = tasks.find((task) => task.id === id);
+		if (taskToUpdate) {
+			addOrModifyTasksData({
+				id: taskToUpdate.id,
+				text: newText,
+				completed: taskToUpdate.completed,
+				user: taskToUpdate.user
+			});
+		}
 	}
 
 	function toggleCompleted(id: number) {
@@ -62,6 +126,16 @@ const TodoList: React.FC<TodoListProps> = () => {
 				}
 			})
 		);
+
+		const taskToUpdate = tasks.find((task) => task.id === id);
+		if (taskToUpdate) {
+			addOrModifyTasksData({
+				id: taskToUpdate.id,
+				text: taskToUpdate.text,
+				completed: !taskToUpdate.completed,
+				user: taskToUpdate.user
+			});
+		}
 	}
 
 	function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {

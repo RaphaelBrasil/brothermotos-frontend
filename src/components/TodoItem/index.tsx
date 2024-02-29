@@ -32,7 +32,6 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	const [editedText, setEditedText] = useState(task.text);
 
 	function handleTextClick() {
-		console.log("Clicked");
 		setClicked(!clicked);
 		toggleCompleted(task.id);
 	}
@@ -47,7 +46,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	}
 
 	return (
-		<S.Container className="todo-item" clicked={clicked}>
+		<S.Container className="todo-item" $clicked={clicked}>
 			{editing ? (
 				<S.NormalInput
 					type="text"
@@ -55,7 +54,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 					onChange={(e) => setEditedText(e.target.value)}
 				/>
 			) : (
-				<S.Item clicked={clicked} onClick={handleTextClick}>
+				<S.Item $clicked={clicked} onClick={handleTextClick}>
 					{task.text}
 				</S.Item>
 			)}
@@ -70,7 +69,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 								? "#095256"
 								: clicked
 								? "#a8a8a8"
-								: "#F0C808",
+								: "#49b4bb",
 							cursor: "pointer"
 						}}
 					/>

@@ -26,18 +26,24 @@ const Signin = () => {
 
 	const onSubmit: SubmitHandler<FormData> = async (data) => {
 		try {
-			const response = await axios.post(baseURL, {
+			const response = await axios.post(`${baseURL}/profiles`, {
 				name: data.name,
 				email: data.email,
 				password: data.password
 			});
 
 			if (response.status === 200) {
-				localStorage.setItem(
-					"userEmail",
-					JSON.stringify(response.data.email)
-				);
-				navigate("/todo");
+				try {
+					localStorage.setItem(
+						"userEmail",
+						JSON.stringify(response.data.email)
+					);
+					navigate("/todo");
+				} catch (error) {
+					setError("password", {
+						message: "Erro ao autenticar"
+					});
+				}
 			} else {
 				setError("password", {
 					message: "E-mail ou senha incorretos"
