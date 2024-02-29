@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 interface Props {
-	$clicked: boolean;
+	$completed: boolean;
 }
 
 export const Container = styled.div<Props>`
@@ -14,15 +14,15 @@ export const Container = styled.div<Props>`
 	padding: 10px;
 	margin: 2px;
 	border: ${(props) =>
-		props.$clicked ? "1px solid #a8a8a8" : "1px solid #49b4bb"};
+		props.$completed ? "1px solid #a8a8a8" : "1px solid #49b4bb"};
 	&:hover {
 		box-shadow: 0 0 10px rgba(73, 180, 187, 0.5);
 	}
 `;
 export const Item = styled.p<Props>`
 	user-select: none;
-	color: ${(props) => (props.$clicked ? "#a8a8a8" : "#49b4bb")};
-	text-decoration: ${(props) => (props.$clicked ? "line-through" : "none")};
+	color: ${(props) => (props.$completed ? "#a8a8a8" : "#49b4bb")};
+	text-decoration: ${(props) => (props.$completed ? "line-through" : "none")};
 	cursor: pointer;
 	border: none;
 	padding: 0.75rem 1rem;

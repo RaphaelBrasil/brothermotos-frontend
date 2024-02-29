@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
 import TodoItem from "../TodoItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+	faPlus,
+	faFilter,
+	faArrowUpWideShort,
+	faArrowUpShortWide
+} from "@fortawesome/free-solid-svg-icons";
 import * as S from "./styles";
 import axios from "axios";
 
 interface Task {
-	id: number;
+	_id: any;
+	date: number;
 	text: string;
 	completed: boolean;
 	user: string;
@@ -17,6 +23,8 @@ interface TodoListProps {}
 const TodoList: React.FC<TodoListProps> = () => {
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const [text, setText] = useState<string>("");
+	const [mostrarTudo, setMostrarTudo] = useState<boolean>(true);
+	const [sortDescending, setSortDescending] = useState<boolean>(true);
 	const [userEmail, setUserEmail] = useState<string>("");
 	const baseURL = "http://localhost:6060";
 
@@ -63,7 +71,7 @@ const TodoList: React.FC<TodoListProps> = () => {
 
 	async function deleteTaskData(task: Task) {
 		try {
-			const response = await axios.delete(`${baseURL}/tasks/${task.id}`);
+			const response = await axios.delete(`${baseURL}/tasks/${task._id}`);
 			console.log("Enviado ao BD");
 			console.log(response);
 		} catch (error) {
@@ -75,12 +83,13 @@ const TodoList: React.FC<TodoListProps> = () => {
 		try {
 			if (taskText.trim() !== "") {
 				const newTask: Task = {
-					id: Date.now(),
+					_id: Date.now(),
+					date: Date.now(),
 					text: taskText,
 					completed: false,
 					user: userEmail
 				};
-				setTasks((prevTasks) => [...prevTasks, newTask]);
+				setTasks((tasks) => [...tasks, newTask]);
 				setText("");
 				addOrModifyTasksData(newTask);
 			}
@@ -89,25 +98,40 @@ const TodoList: React.FC<TodoListProps> = () => {
 		}
 	}
 
-	function deleteTask(id: number) {
-		setTasks(tasks.filter((task) => task.id !== id));
-		const taskToDelete = tasks.find((task) => task.id === id);
-		if (taskToDelete) {
-			deleteTaskData(taskToDelete);
+	async function deleteTask(_id: number) {
+		// Display a confirmation dialog before proceeding
+		const confirmDeletion = window.confirm(
+			"Are you sure you want to delete this task?"
+		);
+
+		if (confirmDeletion) {
+			// If confirmed, proceed with deletion
+			setTasks(tasks.filter((task) => task._id !== _id));
+
+			const taskToDelete = tasks.find((task) => task._id === _id);
+			if (taskToDelete) {
+				try {
+					deleteTaskData(taskToDelete);
+					console.log("Task deleted successfully:");
+				} catch (error) {
+					console.error("Error deleting task data:", error);
+				}
+			}
 		}
 	}
 
-	function editTask(id: number, newText: string) {
-		setTasks((prevTasks) =>
-			prevTasks.map((task) =>
-				task.id === id ? { ...task, text: newText } : task
+	function editTask(_id: number, newText: string) {
+		setTasks((tasks) =>
+			tasks.map((task) =>
+				task._id === _id ? { ...task, text: newText } : task
 			)
 		);
 
-		const taskToUpdate = tasks.find((task) => task.id === id);
+		const taskToUpdate = tasks.find((task) => task._id === _id);
 		if (taskToUpdate) {
 			addOrModifyTasksData({
-				id: taskToUpdate.id,
+				_id: taskToUpdate._id,
+				date: taskToUpdate.date,
 				text: newText,
 				completed: taskToUpdate.completed,
 				user: taskToUpdate.user
@@ -115,21 +139,20 @@ const TodoList: React.FC<TodoListProps> = () => {
 		}
 	}
 
-	function toggleCompleted(id: number) {
-		setTasks(
-			tasks.map((task) => {
-				if (task.id === id) {
-					return { ...task, completed: !task.completed };
-				} else {
-					return task;
-				}
-			})
+	function toggleCompleted(_id: number) {
+		setTasks((tasks) =>
+			tasks.map((task) =>
+				task._id === _id
+					? { ...task, completed: !task.completed }
+					: task
+			)
 		);
 
-		const taskToUpdate = tasks.find((task) => task.id === id);
+		const taskToUpdate = tasks.find((task) => task._id === _id);
 		if (taskToUpdate) {
 			addOrModifyTasksData({
-				id: taskToUpdate.id,
+				_id: taskToUpdate._id,
+				date: taskToUpdate.date,
 				text: taskToUpdate.text,
 				completed: !taskToUpdate.completed,
 				user: taskToUpdate.user
@@ -142,6 +165,23 @@ const TodoList: React.FC<TodoListProps> = () => {
 			addTask(text);
 		}
 	}
+
+	const toggleSortOrder = () => {
+		setSortDescending(!sortDescending);
+	};
+
+	const filteredTasks = tasks
+		.filter((task) => {
+			return mostrarTudo || !task.completed;
+		})
+		.sort((a, b) => {
+			if (sortDescending) {
+				return b.date - a.date;
+			} else {
+				return a.date - b.date;
+			}
+		});
+
 	return (
 		<S.Container className="todo-list">
 			<S.ContainerInput>
@@ -158,10 +198,22 @@ const TodoList: React.FC<TodoListProps> = () => {
 					style={{ color: "#49b4bb", cursor: "pointer" }}
 				/>
 			</S.ContainerInput>
+			<FontAwesomeIcon
+				onClick={() => setMostrarTudo(!mostrarTudo)}
+				size="2xl"
+				icon={faFilter}
+				style={{ color: "black", cursor: "pointer" }}
+			/>
+			<FontAwesomeIcon
+				onClick={() => toggleSortOrder()}
+				size="2xl"
+				icon={sortDescending ? faArrowUpWideShort : faArrowUpShortWide}
+				style={{ color: "black", cursor: "pointer" }}
+			/>
 			<S.ContainerItens>
-				{tasks.map((task) => (
+				{filteredTasks.map((task) => (
 					<TodoItem
-						key={task.id}
+						key={task._id}
 						task={task}
 						deleteTask={deleteTask}
 						editTask={editTask}

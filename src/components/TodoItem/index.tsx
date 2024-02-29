@@ -8,7 +8,8 @@ import {
 import * as S from "./styles";
 
 interface Task {
-	id: number;
+	_id: any;
+	date: number;
 	text: string;
 	completed: boolean;
 	user: string;
@@ -16,9 +17,9 @@ interface Task {
 
 interface TodoItemProps {
 	task: Task;
-	deleteTask: (id: number) => void;
-	editTask: (id: number, newText: string) => void;
-	toggleCompleted: (id: number) => void;
+	deleteTask: (_id: number) => void;
+	editTask: (_id: number, newText: string) => void;
+	toggleCompleted: (_id: number) => void;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({
@@ -27,13 +28,13 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	editTask,
 	toggleCompleted
 }) => {
-	const [clicked, setClicked] = useState(false);
+	const [completed, setCompleted] = useState(task.completed);
 	const [editing, setEditing] = useState(false);
 	const [editedText, setEditedText] = useState(task.text);
 
 	function handleTextClick() {
-		setClicked(!clicked);
-		toggleCompleted(task.id);
+		setCompleted(!completed);
+		toggleCompleted(task._id);
 	}
 
 	function handleEditClick() {
@@ -42,11 +43,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
 
 	function handleSaveClick() {
 		setEditing(false);
-		editTask(task.id, editedText);
+		editTask(task._id, editedText);
 	}
 
 	return (
-		<S.Container className="todo-item" $clicked={clicked}>
+		<S.Container className="todo-item" $completed={completed}>
 			{editing ? (
 				<S.NormalInput
 					type="text"
@@ -54,7 +55,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 					onChange={(e) => setEditedText(e.target.value)}
 				/>
 			) : (
-				<S.Item $clicked={clicked} onClick={handleTextClick}>
+				<S.Item $completed={completed} onClick={handleTextClick}>
 					{task.text}
 				</S.Item>
 			)}
@@ -67,7 +68,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 						style={{
 							color: editing
 								? "#095256"
-								: clicked
+								: completed
 								? "#a8a8a8"
 								: "#49b4bb",
 							cursor: "pointer"
@@ -76,11 +77,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
 				</div>
 				<div style={{ fontSize: "1rem" }}>
 					<FontAwesomeIcon
-						onClick={() => deleteTask(task.id)}
+						onClick={() => deleteTask(task._id)}
 						icon={faMinus}
 						size="2xl"
 						style={{
-							color: clicked ? "#a8a8a8" : "#49b4bb",
+							color: completed ? "#a8a8a8" : "#49b4bb",
 							cursor: "pointer"
 						}}
 					/>
