@@ -21,17 +21,9 @@ const TodoList: React.FC<TodoListProps> = () => {
 	const baseURL = "http://localhost:6060";
 
 	useEffect(() => {
-		// Recuperando informações do usuário do LocalStorage
-		const userString = localStorage.getItem("userEmail");
-		if (userString) {
-			setUserEmail(JSON.parse(userString));
-			console.log("Informações do usuário:", userString);
-		}
-	}, []);
-
-	useEffect(() => {
-		async function fetchData() {
+		async function fetchData(userEmail: Task["user"]) {
 			try {
+				console.log(`${baseURL}/tasks/${userEmail}`);
 				const response = await axios.get(
 					`${baseURL}/tasks/${userEmail}`
 				);
@@ -49,7 +41,14 @@ const TodoList: React.FC<TodoListProps> = () => {
 			}
 		}
 
-		fetchData();
+		// Recuperando informações do usuário do LocalStorage
+		const userString = localStorage.getItem("userEmail");
+		if (userString) {
+			const userEmail = JSON.parse(userString);
+			setUserEmail(userEmail);
+			fetchData(userEmail);
+			console.log("Informações do usuário:", userString);
+		}
 	}, []);
 
 	async function addOrModifyTasksData(task: Task) {
