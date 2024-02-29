@@ -33,8 +33,11 @@ const Signin = () => {
 			});
 
 			if (response.status === 200) {
-				console.log(response.data);
-				navigate("/dashboard");
+				localStorage.setItem(
+					"userEmail",
+					JSON.stringify(response.data.email)
+				);
+				navigate("/todo");
 			} else {
 				setError("password", {
 					message: "E-mail ou senha incorretos"
@@ -58,21 +61,21 @@ const Signin = () => {
 					type="text"
 					placeholder="Nome"
 					{...register("name", {
-						required: "Nome é obrigatório",
+						required: "Nome é obrigatório;!",
 						maxLength: {
 							value: 50,
-							message: "Nome deve ter no máximo 50 caracteres"
+							message: "Nome deve ter no máximo 50 caracteres!"
 						}
 					})}
 				/>
 				<Input
 					type="text"
-					placeholder="Email ou Login"
+					placeholder="Email"
 					{...register("email", {
-						required: "Email é obrigatório",
+						required: "Email é obrigatório!",
 						pattern: {
 							value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-							message: "Email inválido"
+							message: "Email inválido!"
 						}
 					})}
 				/>
@@ -80,10 +83,10 @@ const Signin = () => {
 					type="password"
 					placeholder="Senha"
 					{...register("password", {
-						required: "A senha é obrigatória",
+						required: "A senha é obrigatória!",
 						minLength: {
 							value: 6,
-							message: "Senha deve ter no mínimo 6 caracteres"
+							message: "Senha deve ter no mínimo 6 caracteres!"
 						}
 					})}
 				/>
@@ -97,13 +100,12 @@ const Signin = () => {
 					/>
 					<Button text="Acessar" type="submit" />
 				</S.ButtonContainer>
+				<S.LabelError>
+					{errors.name?.message ||
+						errors.email?.message ||
+						errors.password?.message}
+				</S.LabelError>
 			</S.FormContainer>
-			<S.LabelError>
-				{errors.name?.message ||
-					errors.email?.message ||
-					errors.password?.message ||
-					" "}
-			</S.LabelError>
 		</S.Container>
 	);
 };

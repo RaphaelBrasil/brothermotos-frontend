@@ -1,46 +1,50 @@
 import styled from "styled-components";
 
+const commonSpacing = "5px";
+const labelColor = "#a8a8a8";
+const errorColor = "red";
+
 export const Container = styled.div`
 	display: flex;
 	align-items: center;
-	justify-content: center;
 	flex-direction: column;
-	height: 95vh;
+	height: 100vh;
+	padding: 20vh;
 `;
 
 export const FormContainer = styled.form`
-	gap: 15px;
+	gap: ${commonSpacing};
+	border-radius: 8px;
 	display: flex;
-	background-color: green;
-	align-items: center;
-	align-content: center;
-	justify-content: space-between;
 	flex-direction: column;
-	width: 350px;
-	height: 300px;
+	align-items: center;
+	justify-content: space-between;
+	width: 50%;
+	min-width: 350px;
+	max-width: 400px;
+	padding: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 
-	border-radius: 5px;
 	& > * {
-		margin: 5px;
+		margin: ${commonSpacing};
 	}
 `;
 
 export const ButtonContainer = styled.div`
 	display: flex;
 	align-items: center;
-	align-content: center;
-	justify-content: space-between;
-	width: 100%;
+	justify-content: space-evenly;
+	width: 90%;
 	outline: none;
-	& > * {
-		margin: 5px;
-	}
 `;
+
 export const Label = styled.label`
-	font-size: 13px;
-	color: #a8a8a8;
+	font-size: 15px;
+	color: ${labelColor};
 `;
 
 export const LabelError = styled(Label)`
-	color: red;
+	color: ${errorColor};
+	transition: margin-top 0.3s ease;
+	margin-top: 10px;
 `;

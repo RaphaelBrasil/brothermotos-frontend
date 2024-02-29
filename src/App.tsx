@@ -1,5 +1,6 @@
 import SignIn from "./components/SignIn";
-import Dashboard from "./components/Dashboard";
+import TodoList from "./components/TodoList";
+import GlobalStyle from "./globalStyles";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -7,8 +8,9 @@ function App() {
 		<BrowserRouter>
 			<Routes>
 				<Route path="/" element={<SignIn />} />
-				<Route path="/dashboard" element={<Dashboard />} />
+				<Route path="/todo" element={<TodoList />} />
 			</Routes>
+			<GlobalStyle />
 		</BrowserRouter>
 	);
 }
