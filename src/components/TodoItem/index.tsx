@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faMinus,
 	faGear,
 	faFloppyDisk
 } from "@fortawesome/free-solid-svg-icons";
 import * as S from "./styles";
+import IconPopup from "../IconPopup";
 
 interface Task {
 	_id: any;
@@ -61,7 +61,8 @@ const TodoItem: React.FC<TodoItemProps> = ({
 			)}
 			<S.IconWrapper>
 				<div style={{ fontSize: "1rem" }}>
-					<FontAwesomeIcon
+					<IconPopup
+						popupText="Editar"
 						onClick={editing ? handleSaveClick : handleEditClick}
 						icon={editing ? faFloppyDisk : faGear}
 						size="xl"
@@ -76,7 +77,8 @@ const TodoItem: React.FC<TodoItemProps> = ({
 					/>
 				</div>
 				<div style={{ fontSize: "1rem" }}>
-					<FontAwesomeIcon
+					<IconPopup
+						popupText="Excluir"
 						onClick={() => deleteTask(task._id)}
 						icon={faMinus}
 						size="2xl"

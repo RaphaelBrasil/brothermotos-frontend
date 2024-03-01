@@ -23,8 +23,6 @@ export const StyledButton = styled.button<ButtonProps>`
 		props.theme === "secondary" || props.theme === "transparent"
 			? "#49b4bb"
 			: "white"};
-	border: ${(props) =>
-		props.theme === "secondary" ? "1px solid #49b4bb" : "none"};
 
 	&:hover {
 		background-color: ${(props) =>
@@ -43,4 +41,5 @@ export const StyledButton = styled.button<ButtonProps>`
 		color: #999;
 		cursor: not-allowed;
 	}
+	box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 `;

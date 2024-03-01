@@ -5,9 +5,9 @@ export const NormalInput = styled.input`
 	height: 35px;
 	width: 330px;
 	background-color: #ffffff;
-	border: 1px solid #49b4bb;
+	border: none;
 	color: #a8a8a8;
-
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 	&:hover {
 		box-shadow: 0 0 10px rgba(73, 180, 187, 0.5);
 	}

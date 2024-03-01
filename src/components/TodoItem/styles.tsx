@@ -13,10 +13,14 @@ export const Container = styled.div<Props>`
 	outline: none;
 	padding: 10px;
 	margin: 2px;
-	border: ${(props) =>
-		props.$completed ? "1px solid #a8a8a8" : "1px solid #49b4bb"};
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
 	&:hover {
-		box-shadow: 0 0 10px rgba(73, 180, 187, 0.5);
+		box-shadow: ${(props) =>
+			props.$completed
+				? "0 0 10px rgba(168, 168, 168, 0.5)"
+				: "0 0 10px rgba(73, 180, 187, 0.5)"};
+
+		transform: scale(1.1);
 	}
 `;
 export const Item = styled.p<Props>`

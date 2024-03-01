@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TodoItem from "../TodoItem";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import IconPopup from "../IconPopup";
 import {
 	faPlus,
 	faFilter,
@@ -23,6 +23,7 @@ interface TodoListProps {}
 const TodoList: React.FC<TodoListProps> = () => {
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const [text, setText] = useState<string>("");
+	const [textFilter, setTextFilter] = useState<string>("");
 	const [mostrarTudo, setMostrarTudo] = useState<boolean>(true);
 	const [sortDescending, setSortDescending] = useState<boolean>(true);
 	const [userEmail, setUserEmail] = useState<string>("");
@@ -59,11 +60,22 @@ const TodoList: React.FC<TodoListProps> = () => {
 		}
 	}, []);
 
+	async function sendEmail(task: Task) {
+		try {
+			const response = await axios.post(`${baseURL}/email`, task);
+			console.log("Enviado ao BD Email");
+			console.log(response);
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	async function addOrModifyTasksData(task: Task) {
 		try {
 			const response = await axios.post(`${baseURL}/tasks`, task);
-			console.log("Enviado ao BD");
+			console.log("Enviado ao BD Adição ou alteração");
 			console.log(response);
+			sendEmail(task);
 		} catch (error) {
 			console.log(error);
 		}
@@ -72,8 +84,9 @@ const TodoList: React.FC<TodoListProps> = () => {
 	async function deleteTaskData(task: Task) {
 		try {
 			const response = await axios.delete(`${baseURL}/tasks/${task._id}`);
-			console.log("Enviado ao BD");
+			console.log("Enviado ao BD deleção");
 			console.log(response);
+			sendEmail(task);
 		} catch (error) {
 			console.error("Error deleting task data:", error);
 		}
@@ -99,13 +112,11 @@ const TodoList: React.FC<TodoListProps> = () => {
 	}
 
 	async function deleteTask(_id: number) {
-		// Display a confirmation dialog before proceeding
 		const confirmDeletion = window.confirm(
 			"Are you sure you want to delete this task?"
 		);
 
 		if (confirmDeletion) {
-			// If confirmed, proceed with deletion
 			setTasks(tasks.filter((task) => task._id !== _id));
 
 			const taskToDelete = tasks.find((task) => task._id === _id);
@@ -174,6 +185,9 @@ const TodoList: React.FC<TodoListProps> = () => {
 		.filter((task) => {
 			return mostrarTudo || !task.completed;
 		})
+		.filter((task) =>
+			task.text.toLowerCase().includes(textFilter.toLowerCase())
+		)
 		.sort((a, b) => {
 			if (sortDescending) {
 				return b.date - a.date;
@@ -186,30 +200,34 @@ const TodoList: React.FC<TodoListProps> = () => {
 		<S.Container className="todo-list">
 			<S.ContainerInput>
 				<S.NormalInput
-					value={text}
-					placeholder="Adicione uma tarefa:"
-					onChange={(e) => setText(e.target.value)}
-					onKeyDown={handleKeyDown}
+					placeholder="Pesquise sua tarefa: "
+					onChange={(e) => setTextFilter(e.target.value)}
 				/>
-				<FontAwesomeIcon
-					onClick={() => addTask(text)}
-					size="2xl"
-					icon={faPlus}
-					style={{ color: "#49b4bb", cursor: "pointer" }}
-				/>
+				<S.IconWrapper>
+					<IconPopup
+						popupText="Mostrar Pendentes"
+						onClick={() => setMostrarTudo(!mostrarTudo)}
+						size="xl"
+						icon={faFilter}
+						style={{ color: "#095256", cursor: "pointer" }}
+					/>
+					<IconPopup
+						popupText={
+							sortDescending
+								? "Ordem Decrescente"
+								: "Ordem Crescente"
+						}
+						onClick={() => toggleSortOrder()}
+						size="xl"
+						icon={
+							sortDescending
+								? faArrowUpWideShort
+								: faArrowUpShortWide
+						}
+						style={{ color: "#095256", cursor: "pointer" }}
+					/>
+				</S.IconWrapper>
 			</S.ContainerInput>
-			<FontAwesomeIcon
-				onClick={() => setMostrarTudo(!mostrarTudo)}
-				size="2xl"
-				icon={faFilter}
-				style={{ color: "black", cursor: "pointer" }}
-			/>
-			<FontAwesomeIcon
-				onClick={() => toggleSortOrder()}
-				size="2xl"
-				icon={sortDescending ? faArrowUpWideShort : faArrowUpShortWide}
-				style={{ color: "black", cursor: "pointer" }}
-			/>
 			<S.ContainerItens>
 				{filteredTasks.map((task) => (
 					<TodoItem
@@ -221,6 +239,21 @@ const TodoList: React.FC<TodoListProps> = () => {
 					/>
 				))}
 			</S.ContainerItens>
+			<S.ContainerInput>
+				<S.NormalInput
+					value={text}
+					placeholder="Adicione uma tarefa:"
+					onChange={(e) => setText(e.target.value)}
+					onKeyDown={handleKeyDown}
+				/>
+				<IconPopup
+					popupText="Adicionar"
+					onClick={() => addTask(text)}
+					size="xl"
+					icon={faPlus}
+					style={{ color: "#095256", cursor: "pointer" }}
+				/>
+			</S.ContainerInput>
 		</S.Container>
 	);
 };
