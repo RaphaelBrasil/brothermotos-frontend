@@ -5,7 +5,10 @@ import {
 	faPlus,
 	faFilter,
 	faArrowUpWideShort,
-	faArrowUpShortWide
+	faArrowUpShortWide,
+	faTrash,
+	faEnvelope,
+	faEnvelopeCircleCheck
 } from "@fortawesome/free-solid-svg-icons";
 import * as S from "./styles";
 import axios from "axios";
@@ -26,6 +29,7 @@ const TodoList: React.FC<TodoListProps> = () => {
 	const [textFilter, setTextFilter] = useState<string>("");
 	const [mostrarTudo, setMostrarTudo] = useState<boolean>(true);
 	const [sortDescending, setSortDescending] = useState<boolean>(true);
+	const [habilitaEmail, setHabilitaEmail] = useState<boolean>(true);
 	const [userEmail, setUserEmail] = useState<string>("");
 	const baseURL = "http://localhost:6060";
 
@@ -62,9 +66,11 @@ const TodoList: React.FC<TodoListProps> = () => {
 
 	async function sendEmail(task: Task) {
 		try {
-			const response = await axios.post(`${baseURL}/email`, task);
-			console.log("Enviado ao BD Email");
-			console.log(response);
+			if (habilitaEmail) {
+				const response = await axios.post(`${baseURL}/email`, task);
+				console.log("Enviado ao BD Email");
+				console.log(response);
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -127,6 +133,29 @@ const TodoList: React.FC<TodoListProps> = () => {
 				} catch (error) {
 					console.error("Error deleting task data:", error);
 				}
+			}
+		}
+	}
+
+	async function deleteAllTasksCompleted() {
+		const confirmDeletion = window.confirm(
+			"Tem certeza que você quer deletar todas as tarefas concluidas? Não existe retorno."
+		);
+
+		if (confirmDeletion) {
+			const tasksToDelete = tasks.filter((task) => task.completed);
+
+			setTasks(tasks.filter((task) => !task.completed));
+
+			if (tasksToDelete) {
+				tasksToDelete.forEach(async (taskToDelete) => {
+					try {
+						await deleteTaskData(taskToDelete);
+						console.log("Task deleted successfully:", taskToDelete);
+					} catch (error) {
+						console.error("Error deleting task data:", error);
+					}
+				});
 			}
 		}
 	}
@@ -223,6 +252,26 @@ const TodoList: React.FC<TodoListProps> = () => {
 							sortDescending
 								? faArrowUpWideShort
 								: faArrowUpShortWide
+						}
+						style={{ color: "#095256", cursor: "pointer" }}
+					/>
+					<IconPopup
+						popupText="Remover Concluidas"
+						onClick={() => deleteAllTasksCompleted()}
+						size="xl"
+						icon={faTrash}
+						style={{ color: "#095256", cursor: "pointer" }}
+					/>
+					<IconPopup
+						popupText={
+							habilitaEmail
+								? "Desabilitar envio de email"
+								: "Habilitar envio de email"
+						}
+						onClick={() => setHabilitaEmail(!habilitaEmail)}
+						size="xl"
+						icon={
+							habilitaEmail ? faEnvelopeCircleCheck : faEnvelope
 						}
 						style={{ color: "#095256", cursor: "pointer" }}
 					/>
