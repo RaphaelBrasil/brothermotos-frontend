@@ -48,6 +48,7 @@ export const NormalInput = styled.input`
 `;
 
 export const IconWrapper = styled.div`
+	z-index: 1;
 	background: none;
 	width: 5rem;
 	display: flex;

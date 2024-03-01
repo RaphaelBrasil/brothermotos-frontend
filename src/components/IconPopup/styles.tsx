@@ -1,19 +1,18 @@
 import styled from "styled-components";
 
 export const Popup = styled.div<{ $isVisible: boolean }>`
+	z-index: 999;
+	font-size: 10px;
 	display: ${(props) => (props.$isVisible ? "block" : "none")};
 	position: absolute;
-	background-color: rgba(168, 168, 168, 0.5); /* Cor cinza transparente */
+	background-color: rgba(168, 168, 168, 0.9); /* Cor cinza transparente */
 	color: #fff;
-	padding: 10px;
+	padding: 5px;
 	border-radius: 5px;
 	white-space: nowrap;
 	user-select: none;
-	z-index: 999;
-
-	top: 50%;
-	left: calc(100% - 10px);
-	transform: translate(100%, -50%);
+	top: 100%;
+	left: 50%;
 `;
 export const IconContainer = styled.div`
 	position: relative;
